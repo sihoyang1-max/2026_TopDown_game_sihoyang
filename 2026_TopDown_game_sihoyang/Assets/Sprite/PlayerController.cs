@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     private Sprite[] currentSprites;
     private int frameIndex = 0;
     private float timer = 0f;
+    public int platerHP = 0;
+    public int playerAttack = 0;
 
     private void Awake()
     {
@@ -24,6 +26,30 @@ public class PlayerController : MonoBehaviour
 
         currentSprites = spriteDown;
         sr.sprite = currentSprites[0];
+
+        moveSpeed = GameDataManager.Instance.GetPlayerMoveSpeed();
+        platerHP = GameDataManager.Instance.GetPlayerHp();
+        playerAttack = GameDataManager.Instance.GetPlayerAttack();
+    }
+    void Start()
+    {
+        if(GameDataManager.Instance.isTutorialFinished == 0)
+            {
+                Debug.Log("Æ©Åä¸®¾ó ¿ÀÇÂ!");
+                GameDataManager.Instance.isTutorialFinished = 1;
+            }
+        else
+        {
+
+        }
+    }
+    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Enemy"))
+        {
+            GameManager.instance.GameOver();
+        }
     }
     public void OnMove(InputValue value)
     {
@@ -82,4 +108,5 @@ public class PlayerController : MonoBehaviour
         timer = 0f;
         sr.sprite = currentSprites[frameIndex];
     }
+    
 }
