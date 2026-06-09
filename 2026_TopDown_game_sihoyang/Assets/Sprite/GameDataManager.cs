@@ -5,6 +5,8 @@ using UnityEngine;
 public class SaveData
 {
     public int deathCount;
+
+    public int startBulletCount;
 }
 
 public class GameDataManager : MonoBehaviour
@@ -42,17 +44,20 @@ public class GameDataManager : MonoBehaviour
     }
     public int GetPlayerAttack()
     {
-        int baseAttack = gameSettingData.startAttack;
-        int bonusAttack = gameSettingData.atkBonusPerDeath;
-        return baseAttack + bonusAttack * saveData.deathCount;
+        int baseAtk = gameSettingData.startAttack;
+        int bonusAtk = gameSettingData.atkBonusPerDeath;
+
+        return baseAtk + bonusAtk * saveData.deathCount;
     }
     public float GetPlayerMoveSpeed()
     {
         return gameSettingData.playerMoveSpeed;
     }
-    public void SaveGameResult()
+    public void SaveGameResult(int currentBullet)
     {
         saveData.deathCount++;
+
+        saveData.startBulletCount = currentBullet / 2;
 
         SaveJsonData();
     }
@@ -107,6 +112,9 @@ public class GameDataManager : MonoBehaviour
 
         Debug.Log("PlayerPrefs 삭제 완료");
     }
-    
+    public int GetStartBulletCount()
+    {
+        return saveData.startBulletCount;
+    }
 }
 

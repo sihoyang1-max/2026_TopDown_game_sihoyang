@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
+    private bool stunned = false;
+    private float stunTimer = 0f;
     public Transform player;
 
     public float moveSpeed = 3f;
@@ -20,6 +22,17 @@ public class EnemyAI : MonoBehaviour
 
     private void Update()
     {
+        if (stunned)
+        {
+            stunTimer -= Time.deltaTime;
+
+            if (stunTimer <= 0)
+            {
+                stunned = false;
+            }
+
+            return;
+        }
         if (isMoving)
         {
             transform.position = Vector3.MoveTowards(
@@ -106,5 +119,10 @@ public class EnemyAI : MonoBehaviour
         {
             GameOver();
         }
+    }
+    public void Stun(float duration)
+    {
+        stunned = true;
+        stunTimer = duration;
     }
 }

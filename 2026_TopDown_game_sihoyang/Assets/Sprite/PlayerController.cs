@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 public class PlayerController : MonoBehaviour
 {
+
     public float moveSpeed = 5f;
     public Sprite[] spriteUp;
     public Sprite[] spriteDown;
@@ -18,6 +18,10 @@ public class PlayerController : MonoBehaviour
     private float timer = 0f;
     public int platerHP = 0;
     public int playerAttack = 0;
+    public int bulletCount = 5;
+    public GameObject bulletPrefab;
+
+    private Vector2 lastDirection = Vector2.down;
 
     private void Awake()
     {
@@ -31,19 +35,22 @@ public class PlayerController : MonoBehaviour
         platerHP = GameDataManager.Instance.GetPlayerHp();
         playerAttack = GameDataManager.Instance.GetPlayerAttack();
     }
+
     void Start()
     {
-        if(GameDataManager.Instance.isTutorialFinished == 0)
-            {
-                Debug.Log("Æ©Åä¸®¾ó ¿ÀÇÂ!");
-                GameDataManager.Instance.isTutorialFinished = 1;
-            }
+        bulletCount =
+        GameDataManager.Instance.GetStartBulletCount();
+        if (GameDataManager.Instance.isTutorialFinished == 0)
+        {
+            Debug.Log("Æ©Åä¸®¾ó ¿ÀÇÂ!");
+            GameDataManager.Instance.isTutorialFinished = 1;
+        }
         else
         {
 
         }
     }
-    
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Enemy"))
@@ -55,7 +62,10 @@ public class PlayerController : MonoBehaviour
     {
         input = value.Get<Vector2>();
         velocity = input.normalized * moveSpeed;
-
+        if (input.sqrMagnitude > 0.01f)
+        {
+            lastDirection = input.normalized;
+        }
         if (input.sqrMagnitude > 0.01f)
         {
             if (Mathf.Abs(input.x) > Mathf.Abs(input.y))
@@ -94,6 +104,10 @@ public class PlayerController : MonoBehaviour
 
             sr.sprite = currentSprites[frameIndex];
         }
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            Shoot();
+        }
     }
     private void FixedUpdate()
     {
@@ -108,5 +122,21 @@ public class PlayerController : MonoBehaviour
         timer = 0f;
         sr.sprite = currentSprites[frameIndex];
     }
-    
+    private void Shoot()
+    {
+        if (bulletCount <= 0)
+            return;
+
+        bulletCount--;
+
+        GameObject bullet =
+            Instantiate(
+                bulletPrefab,
+                transform.position +
+                (Vector3)(lastDirection * 0.3f),
+                Quaternion.identity);
+
+        bullet.GetComponent<Bullet>()
+              .SetDirection(lastDirection);
+    }
 }

@@ -25,9 +25,15 @@ public class GameManager : MonoBehaviour
     }
     public void GameOver()
     {
-        GameDataManager.Instance.SaveGameResult();
+        PlayerController player =
+            FindFirstObjectByType<PlayerController>();
+
+        GameDataManager.Instance
+            .SaveGameResult(player.bulletCount);
+
         GoTitle();
     }
+
     public void GoTitle()
     {
         SceneManager.LoadScene(titleSceneName);
