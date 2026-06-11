@@ -57,7 +57,8 @@ public class GameDataManager : MonoBehaviour
     {
         saveData.deathCount++;
 
-        saveData.savedBulletCount = currentBullet / 2;
+        saveData.savedBulletCount =
+            Mathf.Max(1, currentBullet / 2);
 
         SaveJsonData();
     }

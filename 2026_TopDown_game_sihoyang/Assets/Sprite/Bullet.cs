@@ -30,7 +30,20 @@ public class Bullet : MonoBehaviour
 
         if (enemy != null)
         {
+            Debug.Log("¸¶³à ¸íÁß!");
+
             enemy.Stun(2f);
+
+            if (ScreenFlash.Instance != null)
+            {
+                Debug.Log("¼¶±¤ ½ÇÇà!");
+                ScreenFlash.Instance.Flash();
+            }
+            else
+            {
+                Debug.Log("ScreenFlash Instance ¾øÀ½!");
+            }
+
             Destroy(gameObject);
         }
     }

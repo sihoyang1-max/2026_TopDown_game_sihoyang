@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     public int bulletCount = 5;
     public GameObject bulletPrefab;
     public TextMeshProUGUI bulletText;
+    public bool canMove = true;
 
     private Vector2 lastDirection = Vector2.down;
     
@@ -61,6 +62,8 @@ public class PlayerController : MonoBehaviour
     }
     public void OnMove(InputValue value)
     {
+        if (!canMove)
+            return;
         input = value.Get<Vector2>();
         velocity = input.normalized * moveSpeed;
         if (input.sqrMagnitude > 0.01f)
@@ -126,6 +129,9 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (!canMove)
+            return;
+
         rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
     }
     private void ChangeSprites(Sprite[] newSprites)

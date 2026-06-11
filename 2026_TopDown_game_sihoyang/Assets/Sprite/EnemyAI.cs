@@ -1,7 +1,8 @@
+using Unity.VisualScripting;
 using UnityEngine;
-
 public class EnemyAI : MonoBehaviour
 {
+    public bool canMove = true;
     private bool stunned = false;
     private float stunTimer = 0f;
     public Transform player;
@@ -9,7 +10,7 @@ public class EnemyAI : MonoBehaviour
     public float moveSpeed = 3f;
     public float chaseRange = 6f;
     public float gridSize = 0.5f;
-
+    private Camera mainCamera;
     public LayerMask wallLayer;
 
     private bool isMoving = false;
@@ -19,10 +20,14 @@ public class EnemyAI : MonoBehaviour
     private void Start()
     {
         targetPosition = transform.position;
+
+        mainCamera = Camera.main;
     }
 
     private void Update()
     {
+        if (!canMove)
+            return;
         if (stunned)
         {
             stunTimer -= Time.deltaTime;
@@ -85,12 +90,12 @@ public class EnemyAI : MonoBehaviour
         {
             if (!horizontalBlocked)
             {
-                targetPosition = horizontalPos;
+                targetPosition = ClampToCamera(horizontalPos);
                 isMoving = true;
             }
             else if (!verticalBlocked)
             {
-                targetPosition = verticalPos;
+                targetPosition = ClampToCamera(verticalPos);
                 isMoving = true;
             }
         }
@@ -98,12 +103,12 @@ public class EnemyAI : MonoBehaviour
         {
             if (!verticalBlocked)
             {
-                targetPosition = verticalPos;
+                targetPosition = ClampToCamera(verticalPos);
                 isMoving = true;
             }
             else if (!horizontalBlocked)
             {
-                targetPosition = horizontalPos;
+                targetPosition = ClampToCamera(horizontalPos);
                 isMoving = true;
             }
         }
@@ -125,5 +130,18 @@ public class EnemyAI : MonoBehaviour
     {
         stunned = true;
         stunTimer = duration;
+    }
+    private Vector3 ClampToCamera(Vector3 pos)
+    {
+        Vector3 min =
+            mainCamera.ViewportToWorldPoint(new Vector3(0, 0, 0));
+
+        Vector3 max =
+            mainCamera.ViewportToWorldPoint(new Vector3(1, 1, 0));
+
+        pos.x = Mathf.Clamp(pos.x, min.x, max.x);
+        pos.y = Mathf.Clamp(pos.y, min.y, max.y);
+
+        return pos;
     }
 }
