@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
@@ -20,8 +21,10 @@ public class PlayerController : MonoBehaviour
     public int playerAttack = 0;
     public int bulletCount = 5;
     public GameObject bulletPrefab;
+    public TextMeshProUGUI bulletText;
 
     private Vector2 lastDirection = Vector2.down;
+    
 
     private void Awake()
     {
@@ -38,16 +41,14 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        bulletCount =
-        GameDataManager.Instance.GetStartBulletCount();
+        bulletCount = GameDataManager.Instance.GetStartBulletCount();
+
+        UpdateBulletUI();
+
         if (GameDataManager.Instance.isTutorialFinished == 0)
         {
             Debug.Log("Æ©Åä¸®¾ó ¿ÀÇÂ!");
             GameDataManager.Instance.isTutorialFinished = 1;
-        }
-        else
-        {
-
         }
     }
 
@@ -90,7 +91,21 @@ public class PlayerController : MonoBehaviour
         {
             frameIndex = 0;
             sr.sprite = currentSprites[frameIndex];
-            return;
+        }
+        else
+        {
+            timer += Time.deltaTime;
+
+            if (timer >= frameTime)
+            {
+                timer = 0f;
+                frameIndex++;
+
+                if (frameIndex >= currentSprites.Length)
+                    frameIndex = 0;
+
+                sr.sprite = currentSprites[frameIndex];
+            }
         }
         timer += Time.deltaTime;
 
@@ -129,14 +144,20 @@ public class PlayerController : MonoBehaviour
 
         bulletCount--;
 
+        UpdateBulletUI();
+
         GameObject bullet =
             Instantiate(
                 bulletPrefab,
                 transform.position +
-                (Vector3)(lastDirection * 0.3f),
+                (Vector3)(lastDirection * 0.6f),
                 Quaternion.identity);
 
         bullet.GetComponent<Bullet>()
               .SetDirection(lastDirection);
+    }
+    public void UpdateBulletUI()
+    {
+        bulletText.text = "Åº¾à : " + bulletCount;
     }
 }

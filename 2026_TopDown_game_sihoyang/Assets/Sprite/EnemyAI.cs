@@ -15,6 +15,7 @@ public class EnemyAI : MonoBehaviour
     private bool isMoving = false;
     private Vector3 targetPosition;
 
+
     private void Start()
     {
         targetPosition = transform.position;

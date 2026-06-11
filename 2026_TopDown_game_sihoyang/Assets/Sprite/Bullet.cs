@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 8f;
+    public float speed = 2f;
 
     private Vector2 direction;
 
@@ -20,12 +20,17 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.CompareTag("Wall"))
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         EnemyAI enemy = other.GetComponent<EnemyAI>();
 
         if (enemy != null)
         {
             enemy.Stun(2f);
-
             Destroy(gameObject);
         }
     }

@@ -6,7 +6,7 @@ public class SaveData
 {
     public int deathCount;
 
-    public int startBulletCount;
+    public int savedBulletCount;
 }
 
 public class GameDataManager : MonoBehaviour
@@ -57,7 +57,7 @@ public class GameDataManager : MonoBehaviour
     {
         saveData.deathCount++;
 
-        saveData.startBulletCount = currentBullet / 2;
+        saveData.savedBulletCount = currentBullet / 2;
 
         SaveJsonData();
     }
@@ -112,9 +112,25 @@ public class GameDataManager : MonoBehaviour
 
         Debug.Log("PlayerPrefs 삭제 완료");
     }
+    
+    public void SaveBulletCount(int currentBullet)
+    {
+        saveData.savedBulletCount = currentBullet / 2;
+
+        SaveJsonData();
+    }
+    public class SaveData
+    {
+        public int deathCount;
+
+        public int savedBulletCount;
+    }
     public int GetStartBulletCount()
     {
-        return saveData.startBulletCount;
+        if (saveData.savedBulletCount <= 0)
+            return 5;
+
+        return saveData.savedBulletCount;
     }
 }
 
